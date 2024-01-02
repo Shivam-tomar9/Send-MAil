@@ -1,0 +1,28 @@
+    try {
+            $data = array(
+                'to' => $request->user_email,
+                'subject' => $request->user_subject,
+                'body' => $request->message,
+                'name' => $request->user_name
+            );
+
+            // send to user
+            $subject = 'GreatInflux Team Has Received Your Inquiry | Greatinflux | '. date('d-m-Y, H:i A');
+            Mail::send('contactTemplate', $data, function ($message) use ($data, $subject) {
+                $message->to($data['to']);
+                $message->subject($subject);
+            });
+
+            // send to admin
+            $subject = 'New Inquiry Received from User via Get in Touch Form | Greatinflux | '. date('d-m-Y, H:i A');
+            Mail::send('contactTemplate', $data, function ($message) use ($data, $subject) {
+                $message->to('info@greatinflux.com');
+                $message->subject($subject);
+            });
+            return redirect()->back()->with('success', 'Mail Send Successfully');
+
+        } catch (Exception $e) {
+
+            return $e;
+
+        }
